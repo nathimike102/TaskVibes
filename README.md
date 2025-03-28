@@ -3,7 +3,7 @@
 <body>
     <h1>TaskVibe | Smart To-Do App with Weather Integration</h1>
     <p><em>A responsive React-Redux To-Do application with real-time weather updates, priority tasks, and secure authentication.</em></p>
-    <img src="./screenshots/app-preview.png" alt="TaskVibe Screenshot">
+    <img src="./scr/images/app-preview.png" alt="TaskVibe Screenshot">
     <h2>✨ Features</h2>
     <ul class="feature-list">
         <li><strong>Add/Delete Tasks</strong> with priorities (High/Medium/Low)</li>

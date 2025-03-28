@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <body>
-    <h1>TaskVibe | Smart To-Do App with Weather Integration</h1>
+    <h1>TaskVibes | Smart To-Do App with Weather Integration</h1>
     <p><em>A responsive React-Redux To-Do application with real-time weather updates, priority tasks, and secure authentication.</em></p>
     <img src="./scr/images/app-preview.png" alt="TaskVibe Screenshot">
     <h2>✨ Features</h2>

@@ -3,8 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { fetchTasks, updateTaskInFirebase, deleteTaskFromFirebase, reorderTasks, addCommentToTask } from '../../store/slices/tasksSlice';
 import { DndContext, closestCenter } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { Trash2, CheckCircle, MessageSquare, Edit2 } from 'lucide-react';
-import { format } from 'date-fns';
 import TaskCard from './TaskCard';
 
 const TaskList = () => {
@@ -24,11 +22,51 @@ const TaskList = () => {
     const { active, over } = event;
     if (active.id !== over.id) {
       const activeTask = tasks.find(task => task.id === active.id);
+      const newIndex = tasks.findIndex(task => task.id === over.id);
+      
       dispatch(reorderTasks({
-        source: { index: tasks.indexOf(activeTask) },
-        destination: { index: tasks.findIndex(task => task.id === over.id) },
+        source: { index: tasks.findIndex(task => task.id === active.id) },
+        destination: { index: newIndex },
         priority: activeTask.priority
       }));
+    }
+  };
+
+  const handleDeleteTask = async (taskId) => {
+    try {
+      await dispatch(deleteTaskFromFirebase(taskId)).unwrap();
+    } catch (error) {
+      console.error('Failed to delete task:', error);
+    }
+  };
+
+  const handleToggleTask = async (taskId, completed) => {
+    try {
+      await dispatch(updateTaskInFirebase({
+        id: taskId,
+        updates: { completed: !completed }
+      })).unwrap();
+    } catch (error) {
+      console.error('Failed to update task:', error);
+    }
+  };
+
+  const handleAddComment = async (taskId) => {
+    if (comment.trim()) {
+      try {
+        await dispatch(addCommentToTask({
+          taskId,
+          comment: {
+            text: comment,
+            userId: user.id,
+            username: user.username,
+            timestamp: new Date().toISOString()
+          }
+        })).unwrap();
+        setComment('');
+      } catch (error) {
+        console.error('Failed to add comment:', error);
+      }
     }
   };
 
@@ -43,21 +81,6 @@ const TaskList = () => {
   Object.keys(groupedTasks).forEach(priority => {
     groupedTasks[priority].sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
   });
-
-  const handleAddComment = (taskId) => {
-    if (comment.trim()) {
-      dispatch(addCommentToTask({
-        taskId,
-        comment: {
-          text: comment,
-          userId: user.id,
-          username: user.username,
-          timestamp: new Date().toISOString()
-        }
-      }));
-      setComment('');
-    }
-  };
 
   return (
     <div className="grid grid-cols-3 gap-6">
@@ -79,13 +102,10 @@ const TaskList = () => {
                   <TaskCard
                     key={task.id}
                     task={task}
-                    onToggle={() => dispatch(updateTaskInFirebase({
-                      id: task.id,
-                      updates: { completed: !task.completed }
-                    }))}
-                    onDelete={() => dispatch(deleteTaskFromFirebase(task.id))}
+                    onToggle={() => handleToggleTask(task.id, task.completed)}
+                    onDelete={() => handleDeleteTask(task.id)}
                     onEdit={setEditingTask}
-                    onAddComment={handleAddComment}
+                    onAddComment={() => handleAddComment(task.id)}
                     comment={comment}
                     setComment={setComment}
                   />

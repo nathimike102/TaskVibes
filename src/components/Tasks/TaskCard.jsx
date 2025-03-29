@@ -35,7 +35,9 @@ const TaskCard = ({ task, onToggle, onDelete, onEdit, onAddComment, comment, set
                 task.completed ? 'text-[#1DB954]' : ''
               }`}
             >
-              <CheckCircle className="h-5 w-5" />
+              <CheckCircle className="h-5 w-5"                 
+              style={{ color: task.completed ? '#1DB954' : 'inherit' }}
+              />
             </button>
             <span
               className={`text-lg ${

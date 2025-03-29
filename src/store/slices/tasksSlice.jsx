@@ -1,11 +1,15 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { collection, addDoc, query, where, getDocs, updateDoc, doc, deleteDoc } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs, updateDoc, doc, deleteDoc, orderBy } from 'firebase/firestore';
 import { db } from '../../firebase/config';
 
 export const fetchTasks = createAsyncThunk(
   'tasks/fetchTasks',
   async (userId) => {
-    const q = query(collection(db, 'tasks'), where('userId', '==', userId));
+    const q = query(
+      collection(db, 'tasks'), 
+      where('userId', '==', userId),
+      orderBy('dueDate', 'asc')
+    );
     const querySnapshot = await getDocs(q);
     return querySnapshot.docs.map(doc => ({
       id: doc.id,
@@ -25,7 +29,8 @@ export const addTaskToFirebase = createAsyncThunk(
 export const updateTaskInFirebase = createAsyncThunk(
   'tasks/updateTask',
   async ({ id, updates }) => {
-    await updateDoc(doc(db, 'tasks', id), updates);
+    const taskRef = doc(db, 'tasks', id);
+    await updateDoc(taskRef, updates);
     return { id, ...updates };
   }
 );
@@ -33,7 +38,8 @@ export const updateTaskInFirebase = createAsyncThunk(
 export const deleteTaskFromFirebase = createAsyncThunk(
   'tasks/deleteTask',
   async (id) => {
-    await deleteDoc(doc(db, 'tasks', id));
+    const taskRef = doc(db, 'tasks', id);
+    await deleteDoc(taskRef);
     return id;
   }
 );
@@ -42,9 +48,10 @@ export const addCommentToTask = createAsyncThunk(
   'tasks/addComment',
   async ({ taskId, comment }) => {
     const taskRef = doc(db, 'tasks', taskId);
-    await updateDoc(taskRef, {
+    const updates = {
       comments: comment
-    });
+    };
+    await updateDoc(taskRef, updates);
     return { taskId, comment };
   }
 );
@@ -74,6 +81,7 @@ const tasksSlice = createSlice({
     builder
       .addCase(fetchTasks.pending, (state) => {
         state.loading = true;
+        state.error = null;
       })
       .addCase(fetchTasks.fulfilled, (state, action) => {
         state.loading = false;
@@ -98,7 +106,10 @@ const tasksSlice = createSlice({
       .addCase(addCommentToTask.fulfilled, (state, action) => {
         const task = state.items.find(task => task.id === action.payload.taskId);
         if (task) {
-          task.comments = [...(task.comments || []), action.payload.comment];
+          if (!task.comments) {
+            task.comments = [];
+          }
+          task.comments.push(action.payload.comment);
         }
       });
   }

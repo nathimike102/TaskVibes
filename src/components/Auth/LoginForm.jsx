@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser, registerUser, clearError } from '../../store/slices/authSlice';
+import { setCurrentLocation, fetchWeatherByCoords } from '../../store/slices/weatherSlice';
 import { LogIn, UserPlus } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const LoginForm = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -20,10 +22,33 @@ const LoginForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isLogin) {
-      dispatch(loginUser({ email, password }));
-    } else {
-      dispatch(registerUser({ email, password, username }));
+    try {
+      if (isLogin) {
+        await dispatch(loginUser({ email, password })).unwrap();
+      } else {
+        await dispatch(registerUser({ email, password, username })).unwrap();
+      }
+      
+      // Get user's location after successful login/registration
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            const { latitude: lat, longitude: lon } = position.coords;
+            dispatch(setCurrentLocation({ lat, lon }));
+            try {
+              await dispatch(fetchWeatherByCoords({ lat, lon })).unwrap();
+              toast.success('Weather data updated for your location');
+            } catch (error) {
+              toast.error('Failed to fetch weather for your location');
+            }
+          },
+          (error) => {
+            toast.error('Location access denied. Some features may be limited.');
+          }
+        );
+      }
+    } catch (error) {
+      console.error('Authentication error:', error);
     }
   };
 

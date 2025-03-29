@@ -10,24 +10,112 @@
   --spotify-white: #FFFFFF;
 }
 
-body {
-  background-color: var(--spotify-black);
-  color: var(--spotify-white);
+@layer base {
+  html {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 480px) {
+    html {
+      font-size: 14px;
+    }
+  }
+
+  body {
+    @apply bg-[#121212] text-white;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  }
+
+  h1 { @apply text-4xl font-bold; }
+  h2 { @apply text-3xl font-bold; }
+  h3 { @apply text-2xl font-bold; }
+  h4 { @apply text-xl font-bold; }
+  h5 { @apply text-lg font-bold; }
+  h6 { @apply text-base font-bold; }
 }
 
-.spotify-button {
-  @apply bg-[#1DB954] text-white font-bold py-3 px-8 rounded-full hover:scale-105 transition-transform;
+@layer components {
+  .spotify-button {
+    @apply bg-[#1DB954] text-white font-bold py-3 px-6 rounded-full 
+           hover:scale-105 transition-transform duration-200
+           min-h-[44px] min-w-[44px]
+           disabled:opacity-50 disabled:cursor-not-allowed
+           focus:outline-none focus:ring-2 focus:ring-[#1DB954] focus:ring-offset-2 focus:ring-offset-[#121212];
+  }
+
+  .spotify-input {
+    @apply bg-[#282828] text-white border-0 rounded-md 
+           focus:ring-[#1DB954] focus:ring-2 
+           placeholder-gray-400
+           h-12 px-4
+           transition-all duration-200;
+  }
+
+  .spotify-card {
+    @apply bg-[#181818] rounded-lg p-4 
+           hover:bg-[#282828] transition-colors duration-200
+           focus-within:ring-2 focus-within:ring-[#1DB954]
+           shadow-lg;
+  }
+
+  .spotify-card:hover {  
+    @apply scale-105 shadow-[0_10px_20px_rgba(0,0,0,0.3)]  
+           transform transition-transform duration-200 ease-in-out;  
+  }  
+
+  .task-grid {
+    @apply grid gap-4;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  }
+
+  .weather-card {
+    @apply bg-[#181818] rounded-lg p-6 
+           backdrop-blur-lg backdrop-filter
+           border border-white/10
+           hover:border-white/20 transition-all duration-200;
+  }
+
+  .modal-overlay {
+    @apply fixed inset-0 bg-black/50 backdrop-blur-sm
+           flex items-center justify-center
+           p-4;
+  }
+
+  .modal-content {
+    @apply bg-[#282828] rounded-lg p-6
+           max-w-lg w-full
+           shadow-xl
+           transform transition-all duration-200;
+  }
 }
 
-.spotify-input {
-  @apply bg-[#282828] text-white border-0 rounded-md focus:ring-[#1DB954] focus:ring-2 placeholder-gray-400;
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-.spotify-card {
-  @apply bg-[#181818] rounded-lg p-4 hover:bg-[#282828] transition-colors duration-200;
+@keyframes slideIn {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
-.spotify-card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.2s ease-out;
+}
+
+.sr-only {
+  @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
+}
+
+.container {
+  @apply mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl;
+}
+
+.touch-target {
+  @apply min-h-[44px] min-w-[44px];
 }

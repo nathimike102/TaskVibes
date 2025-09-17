@@ -14,12 +14,13 @@
         <li><strong>Error Handling</strong> for API failures with user-friendly alerts</li>
     </ul>
     <h2>🚀 Live Demo</h2>
-    <p>Hosted on Vercel: <a href="https://taskvibe-app.vercel.app">https://taskvibe-app.vercel.app</a></p>
+    <p>Available at: <a href="https://taskvibes.io">https://taskvibes.io</a></p>
+    <p><em>Also accessible via Vercel: <a href="https://taskvibe-app.vercel.app">https://taskvibe-app.vercel.app</a></em></p>
     <h2>🛠️ Setup Instructions</h2>
     <ol>
         <li><strong>Clone the repo</strong>:
-            <pre><code>git clone https://github.com/your-username/taskvibe.git
-cd taskvibe</code></pre>
+            <pre><code>git clone https://github.com/nathimike102/TaskVibes.git
+cd TaskVibes</code></pre>
         </li>
         <li><strong>Install dependencies</strong>:
             <pre><code>npm install</code></pre>
@@ -28,13 +29,35 @@ cd taskvibe</code></pre>
             <ul>
                 <li>Sign up for <a href="https://www.weatherapi.com/">Weather API</a> (free tier).</li>
                 <li>Create a <code>.env</code> file:
-                    <pre><code>REACT_APP_WEATHER_API_KEY=your_api_key_here</code></pre>
+                    <pre><code>VITE_WEATHER_API_KEY=your_api_key_here</code></pre>
                 </li>
             </ul>
         </li>
         <li><strong>Run the app</strong>:
-            <pre><code>npm start</code></pre>
+            <pre><code>npm run dev</code></pre>
         </li>
+    </ol>
+    <h2>🌐 Custom Domain Setup</h2>
+    <p>This project supports custom domain deployment. Here are examples of acceptable custom domain configurations:</p>
+    <h3>Acceptable Domain Examples:</h3>
+    <ul>
+        <li><code>taskvibes.io</code> - Primary domain (currently used)</li>
+        <li><code>www.taskvibes.io</code> - WWW subdomain</li>
+        <li><code>app.taskvibes.io</code> - App subdomain</li>
+        <li><code>taskvibes.com</code> - Alternative TLD</li>
+        <li><code>my-taskvibes.netlify.app</code> - Platform-specific domain</li>
+        <li><code>taskvibes-prod.herokuapp.com</code> - Environment-specific domain</li>
+    </ul>
+    <h3>Domain Configuration:</h3>
+    <ol>
+        <li>Update the <code>CNAME</code> file in the repository root with your domain</li>
+        <li>Configure DNS settings with your domain provider:
+            <ul>
+                <li>For apex domains: Add A records pointing to GitHub Pages IPs</li>
+                <li>For subdomains: Add CNAME record pointing to <code>nathimike102.github.io</code></li>
+            </ul>
+        </li>
+        <li>Enable HTTPS in repository settings under Pages</li>
     </ol>
     <h2>📂 Project Structure</h2>
     <pre><code>src/
